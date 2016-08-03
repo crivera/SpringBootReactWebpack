@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: app
+Implementation-Version: 0.1.0
+Built-By: Christopher
+Implementation-Vendor-Id: com
+Build-Jdk: 1.8.0_91
+Implementation-URL: http://projects.spring.io/spring-boot/app/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
