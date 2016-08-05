@@ -5,7 +5,12 @@
  	<head>
       	<meta name="decorator" content="/jsp/templates/main.jsp">
   </head>
+  
+ 	<content tag="javascript">
+ 		<script type="text/javascript" src="/bundle/main2.bundle.js"></script>
+ 	</content>
+	
 	<body>
-		index
+			<div id="myDiv"></div>
 	</body>
 </html>
