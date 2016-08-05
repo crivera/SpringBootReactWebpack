@@ -1,9 +1,0 @@
-{
-  "groups": [{
-    "name": "config",
-    "type": "com.config.SystemConfig",
-    "sourceType": "com.config.SystemConfig"
-  }],
-  "properties": [],
-  "hints": []
-}
