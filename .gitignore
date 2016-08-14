@@ -1,5 +1,7 @@
+.settings
 .env 
 .classpath
+.factorypath
 .project
 .springBeans
 target

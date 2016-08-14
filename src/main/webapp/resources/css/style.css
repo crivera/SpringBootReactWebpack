@@ -1,0 +1,46 @@
+body {
+	margin: 0;
+}
+
+/* Disable ugly boxes around images in IE10 */
+a img {
+	border: 0px;
+}
+
+.main {
+	margin-top: 70px;
+	min-height: 600px;
+}
+
+.card-signup {
+	margin: 160px 0 40px;
+}
+
+.space {
+	padding-bottom: 30px;
+}
+
+.material-icons.md-18 {
+	font-size: 18px;
+}
+
+.material-icons.md-24 {
+	font-size: 24px;
+}
+
+.material-icons.md-36 {
+	font-size: 36px;
+}
+
+.material-icons.md-48 {
+	font-size: 48px;
+}
+
+.logo {
+	float: left;
+}
+
+.brand {
+	float: right;
+	margin-top: 12px;
+}

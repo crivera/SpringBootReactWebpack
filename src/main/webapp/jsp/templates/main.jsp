@@ -1,7 +1,7 @@
 <%@include file="/jsp/_inc.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
- 	<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# on-aire: http://ogp.me/ns/fb/on-aire#">
+ 	<head>
    	<meta charset="utf-8">
     <meta name="keywords" content="">
 		<meta name="description" content="">
@@ -33,10 +33,14 @@
 		
 		<!-- Bootstrap -->
 	  <!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+  	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
 		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+			
 		<!-- Default CSS -->
 		<link rel="stylesheet" href="/resources/css/style.css">
+		<link rel="stylesheet" href="/resources/css/material-kit.css"/>
 		
 	  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -47,10 +51,84 @@
 	    
 	</head>
 	<body>
-			<sitemesh:write property="body"/>
-	  	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>		
-			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-			<script src="https://use.fontawesome.com/0a0888c20b.js"></script>
-			<sitemesh:write property="page.javascript"/>
+		<nav class="navbar navbar-info navbar-fixed-top">
+			<div class="container">
+      	<div class="navbar-header">
+	    		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-index">
+	        	<span class="sr-only">Toggle navigation</span>
+	        	<span class="icon-bar"></span>
+	        	<span class="icon-bar"></span>
+	        	<span class="icon-bar"></span>
+	    		</button>
+	    		<a href="/home" style="color: #fff">
+	        	<div class="logo-container">
+	          	<div class="logo">
+	            	<i class="material-icons md-48 ">chat</i>
+	            </div>
+	            <div class="brand">
+	            	CHATTER BOX
+	            </div>
+						</div>
+	      	</a>
+	    	</div>
+
+	    	<div class="collapse navbar-collapse" id="navigation-index">
+	    		<ul class="nav navbar-nav navbar-right">
+						<li>
+							<a href="/aroundMe">
+								<i class="material-icons">near_me</i> Around Me
+							</a>
+						</li>
+						<li>
+							<a href="/loginPage">
+								<i class="material-icons">account_circle</i> Login
+							</a>
+						</li>
+					</ul>
+	    	</div>
+			</div>
+		</nav>
+		<div class="wrapper">
+			<div class="main">
+				<div class="container">
+					<sitemesh:write property="body"/>
+	  		</div>
+			</div>
+		</div>
+		
+		<footer class="footer">
+	  	<div class="container">
+	    	<nav class="pull-left">
+	      	<ul>
+						<li>
+							<a href="">Privacy Policy</a>
+						</li>
+						<li>
+							<a href="">About Us</a>
+						</li>
+						<li>
+							<a href="">Blog</a>
+						</li>
+						<li>
+							<a href="">Terms of Use</a>
+						</li>
+	        </ul>
+	      </nav>
+	      <div class="copyright pull-right">
+	      	&copy; 2016, made with <i class="material-icons">favorite</i> by DevCon One, Inc.
+	      </div>
+	    </div>
+		</footer>
+		<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>		
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		
+		<script src="/resources/js/libraries/material.min.js" type="text/javascript"></script>
+		<script src="/resources/js/libraries/material-kit.js" type="text/javascript"></script>
+		
+		<script src="/resources/js/libraries/nouislider.min.js" type="text/javascript"></script>
+		<script src="/resources/js/libraries/bootstrap-datepicker.js" type="text/javascript"></script>
+		
+		<sitemesh:write property="page.javascript"/>
+		
 	</body>
 </html>
