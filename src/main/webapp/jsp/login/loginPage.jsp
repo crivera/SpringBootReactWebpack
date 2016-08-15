@@ -15,7 +15,7 @@
 		<div class="row">
 			<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
 				<div class="card card-signup">
-					<form class="form" method="post" action="/login">
+					<form class="form" method="post" action="/loginWithAccountKit">
 						<input type="hidden" id="code" name="code" value=""/>
 						<div class="content text-center">
 							<h2>Login</h2>

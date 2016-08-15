@@ -1,11 +1,10 @@
 import React from 'react';
 import {render} from 'react-dom';
-import Test from './test.js';
 
-class App extends React.Component {
+class AroundMe extends React.Component {
   render () {
-    return <p> Hello React123!<Test/></p>;
+    return <p> Hello React123!</p>;
   }
 }
 
-render(<App/>, document.getElementById('myDiv'));
+render(<AroundMe/>, document.getElementById('aroundMeDiv'));

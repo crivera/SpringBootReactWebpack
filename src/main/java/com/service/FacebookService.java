@@ -22,8 +22,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.dao.UserDao;
 import com.exception.ErrorLoggingInException;
+import com.exception.GeneralError;
 import com.model.User;
 import com.utils.Constants;
 
@@ -37,7 +37,7 @@ public class FacebookService {
 	private String appSecret;
 
 	@Autowired
-	private UserDao userDao;
+	private UserService userService;
 
 	/**
 	 * 
@@ -72,7 +72,7 @@ public class FacebookService {
 					response = EntityUtils.toString(result.getEntity());
 					json = new JSONObject(response);
 					try {
-						User user = userDao.getUserByAccountKitId(accountKitId);
+						User user = userService.getUserByAccountKitId(accountKitId);
 						if (!user.isEnabled())
 							throw new ErrorLoggingInException("User not enabled.");
 						return user;
@@ -82,17 +82,22 @@ public class FacebookService {
 						if (e instanceof EmptyResultDataAccessException) {
 							User user = new User();
 							user.setAccountKitId(accountKitId);
-							if (json.has("phone")){
+							if (json.has("phone")) {
 								user.setPhone(json.getJSONObject("phone").getString("number"));
 							}
-							if (json.has("email")){
+							if (json.has("email")) {
 								user.setEmail(json.getJSONObject("email").getString("email"));
 							}
-							
-							
-							return userDao.createUser(user);
+
+							try {
+								return userService.create(user);
+							} catch (GeneralError e1) {
+								throw new ErrorLoggingInException(e1);
+							}
 						} else
 							throw new ErrorLoggingInException(e);
+					} catch (GeneralError e) {
+						throw new ErrorLoggingInException(e);
 					}
 				} else {
 					// this error is executed if there is something wrong with

@@ -11,6 +11,6 @@
  	</content>
 	
 	<body>
-			Welcome
+		Profile
 	</body>
 </html>

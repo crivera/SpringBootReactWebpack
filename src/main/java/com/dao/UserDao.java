@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -22,9 +23,14 @@ public class UserDao {
 
 	private SimpleJdbcInsert insertUser;
 
+	private BeanPropertyRowMapper<User> userMapper;
+
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		this.insertUser = new SimpleJdbcInsert(dataSource).withTableName("user").usingGeneratedKeyColumns("id");
+		userMapper = new BeanPropertyRowMapper<User>(User.class);
+		userMapper.setCheckFullyPopulated(false);
+		userMapper.setPrimitivesDefaultedForNullValue(true);
 	}
 
 	/**
@@ -34,7 +40,16 @@ public class UserDao {
 	 */
 	public User getUserByAccountKitId(long accountKitId) {
 		return jdbcTemplate.queryForObject("select * from user where account_kit_id = ?", new Object[] { accountKitId },
-				User.class);
+				userMapper);
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public User getUserById(long userId) {
+		return jdbcTemplate.queryForObject("select * from user where id = ?", new Object[] { userId }, userMapper);
 	}
 
 	/**
@@ -42,14 +57,14 @@ public class UserDao {
 	 * @param user
 	 * @return
 	 */
-	public User createUser(User user) {
+	public User save(User user) {
 		Map<String, Object> parameters = new HashMap<>();
 		if (StringUtils.isNotEmpty(user.getEmail()))
 			parameters.put("email", user.getEmail());
 		if (StringUtils.isNotEmpty(user.getPhone()))
 			parameters.put("phone", user.getPhone());
 		parameters.put("account_kit_id", user.getAccountKitId());
-		
+
 		parameters.put("enabled", true);
 		parameters.put("create_date", LocalDateTime.now());
 		parameters.put("last_update_date", LocalDateTime.now());
@@ -63,7 +78,8 @@ public class UserDao {
 	 * @param user
 	 * @return
 	 */
-	public User updateUser(User user) {
+	public User update(User user) {
 		return null;
 	}
+
 }

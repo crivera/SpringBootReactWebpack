@@ -14,6 +14,12 @@ public class Constants {
 
 	public static final Map<String, String> STATES = new TreeMap<String, String>();
 
+	public static final String KRYPTO_KEY = "k1mp1zR1ckk1mp1zR1ckk0mp0zR0ck91";
+
+	public static final String AUTH_URL_ACCOUNT_KIT = "/loginWithAccountKit";
+
+	public static final String TOKEN = "token";
+
 	static {
 		STATES.put("Alabama", "AL");
 		STATES.put("Alaska", "AK");

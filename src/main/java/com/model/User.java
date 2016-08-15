@@ -2,8 +2,14 @@ package com.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
-public class User implements Serializable {
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+
+public class User implements Serializable, UserDetails {
 
 	/**
 	 * 
@@ -26,6 +32,8 @@ public class User implements Serializable {
 
 	private LocalDateTime createDate;
 	private LocalDateTime lastUpdateDate;
+
+	private String token;
 
 	public long getId() {
 		return id;
@@ -121,6 +129,48 @@ public class User implements Serializable {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	/**
+	 * spring security stuff
+	 */
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> roles = AuthorityUtils.createAuthorityList("ROLE_USER");
+		return roles;
+	}
+
+	@Override
+	public String getUsername() {
+		return userName;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return enabled;
+	}
+
+	@Override
+	public String getPassword() {
+		return "notbeeded";
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
 	}
 
 }

@@ -2,16 +2,15 @@
 <%@include file="/jsp/_inc.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
- 	<head>
-      	<meta name="decorator" content="/jsp/templates/main.jsp">
-  </head>
+  	<head>
+  		<meta name="decorator" content="/jsp/templates/main.jsp">
+  	</head>
   
  	<content tag="javascript">
- 		<script type="text/javascript" src="/bundle/main2.bundle.js"></script>
+ 		<script type="text/javascript" src="/bundle/aroundMe.bundle.js"></script>
  	</content>
 	
 	<body>
-	test
-			<div id="myDiv"></div>
+		<div id="aroundMeDiv"></div>
 	</body>
 </html>
