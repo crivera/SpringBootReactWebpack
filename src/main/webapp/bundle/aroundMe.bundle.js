@@ -49,6 +49,10 @@
 
 	'use strict';
 	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(/*! react */ 1);
@@ -56,6 +60,10 @@
 	var _react2 = _interopRequireDefault(_react);
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 35);
+	
+	var _GoogleMaps = __webpack_require__(/*! ./components/maps/GoogleMaps.js */ 175);
+	
+	var _GoogleMaps2 = _interopRequireDefault(_GoogleMaps);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -68,25 +76,130 @@
 	var AroundMe = function (_React$Component) {
 	  _inherits(AroundMe, _React$Component);
 	
-	  function AroundMe() {
+	  function AroundMe(props) {
 	    _classCallCheck(this, AroundMe);
 	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(AroundMe).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AroundMe).call(this, props));
+	
+	    _this.state = { chatName: '' };
+	    return _this;
 	  }
 	
 	  _createClass(AroundMe, [{
+	    key: 'handleInput',
+	    value: function handleInput(event) {
+	      this.setState({ chatName: event.target.value.substr(0, 30) });
+	    }
+	  }, {
+	    key: 'submitNewChat',
+	    value: function submitNewChat() {
+	      var chatName = this.state.chatName;
+	      if (chatName.length == 0) return;
+	      app.doAuthenicatedPost({
+	        url: '/chat/new',
+	        data: {
+	          'name': chatName,
+	          'lat': this.state.lat,
+	          'lng': this.state.lng
+	        },
+	        callback: function callback(status, data) {
+	          if (status == 'SUCCESS') {} else {
+	            if (data.code == 100) {}
+	          }
+	        }
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
-	        'p',
+	        'div',
 	        null,
-	        ' Hello React123!'
+	        _react2.default.createElement(
+	          'button',
+	          { className: 'btn btn-success btn-fab btn-fab-mini btn-round', id: 'newChatButton', 'data-toggle': 'modal', 'data-target': '#newChatModal' },
+	          _react2.default.createElement(
+	            'i',
+	            { className: 'material-icons' },
+	            'add'
+	          ),
+	          _react2.default.createElement('div', { className: 'ripple-container' })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'modal fade', id: 'newChatModal', role: 'dialog', style: { display: 'none' } },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'modal-dialog' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'modal-content' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'modal-header' },
+	                _react2.default.createElement(
+	                  'button',
+	                  { type: 'button', className: 'close', 'data-dismiss': 'modal' },
+	                  _react2.default.createElement(
+	                    'i',
+	                    { className: 'material-icons' },
+	                    'clear'
+	                  )
+	                ),
+	                _react2.default.createElement(
+	                  'h4',
+	                  { className: 'modal-title' },
+	                  'New Chat'
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'modal-body' },
+	                _react2.default.createElement(
+	                  'p',
+	                  null,
+	                  'All we need is a name for your chat:'
+	                ),
+	                _react2.default.createElement(
+	                  'div',
+	                  { className: 'form-group is-empty' },
+	                  _react2.default.createElement('input', { type: 'text', value: this.state.chatName, onChange: this.handleInput.bind(this), placeholder: 'Name', className: 'form-control' }),
+	                  _react2.default.createElement('span', { className: 'material-input' })
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'modal-footer' },
+	                _react2.default.createElement(
+	                  'button',
+	                  { onClick: this.submitNewChat.bind(this), type: 'button', className: 'btn btn-default btn-simple' },
+	                  'Create',
+	                  _react2.default.createElement('div', { className: 'ripple-container' })
+	                ),
+	                _react2.default.createElement(
+	                  'button',
+	                  { type: 'button', className: 'btn btn-danger btn-simple', 'data-dismiss': 'modal' },
+	                  'Cancel',
+	                  _react2.default.createElement(
+	                    'div',
+	                    { className: 'ripple-container' },
+	                    _react2.default.createElement('div', { className: 'ripple ripple-on ripple-out' })
+	                  )
+	                )
+	              )
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(_GoogleMaps2.default, null)
 	      );
 	    }
 	  }]);
 	
 	  return AroundMe;
 	}(_react2.default.Component);
+	
+	exports.default = AroundMe;
+	
 	
 	(0, _reactDom.render)(_react2.default.createElement(AroundMe, null), document.getElementById('aroundMeDiv'));
 
@@ -22017,6 +22130,83 @@
 	var ReactMount = __webpack_require__(/*! ./ReactMount */ 167);
 	
 	module.exports = ReactMount.renderSubtreeIntoContainer;
+
+/***/ },
+/* 175 */
+/*!***********************************************************!*\
+  !*** ./src/main/webapp/jsx/components/maps/GoogleMaps.js ***!
+  \***********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 35);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var GoogleMaps = function (_React$Component) {
+	  _inherits(GoogleMaps, _React$Component);
+	
+	  function GoogleMaps() {
+	    _classCallCheck(this, GoogleMaps);
+	
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(GoogleMaps).apply(this, arguments));
+	  }
+	
+	  _createClass(GoogleMaps, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.loadMap();
+	    }
+	  }, {
+	    key: 'loadMap',
+	    value: function loadMap() {
+	      var mapRef = this.refs.map;
+	      var node = _reactDom2.default.findDOMNode(mapRef);
+	
+	      var zoom = 14;
+	      var lat = 37.774929;
+	      var lng = -122.419416;
+	      var center = new google.maps.LatLng(lat, lng);
+	      var mapConfig = Object.assign({}, {
+	        center: center,
+	        zoom: zoom
+	      });
+	      this.map = new google.maps.Map(node, mapConfig);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { id: 'map', ref: 'map' },
+	        'Loading map...'
+	      );
+	    }
+	  }]);
+	
+	  return GoogleMaps;
+	}(_react2.default.Component);
+	
+	exports.default = GoogleMaps;
 
 /***/ }
 /******/ ]);

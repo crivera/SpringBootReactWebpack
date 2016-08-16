@@ -29,8 +29,6 @@
 
     	<title><sitemesh:write property="title"/></title>
 
-		<sitemesh:write property="head"/>
-		
 		<!-- Bootstrap -->
 	  	<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
@@ -48,7 +46,8 @@
 		    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
-	    
+	    <sitemesh:write property="head"/>
+		
 	</head>
 	<body>
 		<nav class="navbar navbar-info navbar-fixed-top">
@@ -90,7 +89,7 @@
 		</nav>
 		<div class="wrapper">
 			<div class="main">
-				<div class="container">
+				<div class="container-fluid">
 					<sitemesh:write property="body"/>
 	  			</div>
 			</div>
@@ -119,14 +118,16 @@
 	      		</div>
 	    	</div>
 		</footer>
-		<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>		
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.1.0.min.js" type="text/javascript"></script>		
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" type="text/javascript"></script>
 		
 		<script src="/resources/js/libraries/material.min.js" type="text/javascript"></script>
 		<script src="/resources/js/libraries/material-kit.js" type="text/javascript"></script>
 		
 		<script src="/resources/js/libraries/nouislider.min.js" type="text/javascript"></script>
 		<script src="/resources/js/libraries/bootstrap-datepicker.js" type="text/javascript"></script>
+		
+		<script src="/resources/js/app.js" type="text/javascript"></script>
 		
 		<sitemesh:write property="page.javascript"/>
 		

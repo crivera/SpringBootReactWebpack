@@ -128,6 +128,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					SecurityContextHolder.getContext().setAuthentication(responseAuthentication);
 					successHandler().onAuthenticationSuccess((HttpServletRequest) request,
 							(HttpServletResponse) response, responseAuthentication);
+					return;
 				} else {
 					throw new InternalAuthenticationServiceException(
 							"Unable to authenticate Domain User for provided credentials");
@@ -138,8 +139,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				Authentication responseAuthentication = authenticationManager.authenticate(requestAuthentication);
 				if (responseAuthentication != null && !responseAuthentication.isAuthenticated()) {
 					SecurityContextHolder.getContext().setAuthentication(responseAuthentication);
-					successHandler().onAuthenticationSuccess((HttpServletRequest) request,
-							(HttpServletResponse) response, responseAuthentication);
 				} else {
 					throw new InternalAuthenticationServiceException(
 							"Unable to authenticate Domain User for provided credentials");
