@@ -61,6 +61,8 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 35);
 	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
 	var _GoogleMaps = __webpack_require__(/*! ./components/maps/GoogleMaps.js */ 175);
 	
 	var _GoogleMaps2 = _interopRequireDefault(_GoogleMaps);
@@ -81,7 +83,28 @@
 	
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AroundMe).call(this, props));
 	
-	    _this.state = { chatName: '' };
+	    _this.state = {
+	      chatName: '',
+	      lat: 37.774929,
+	      lng: -122.419416,
+	      html5Geolocation: false,
+	      availableChats: []
+	    };
+	
+	    if (navigator.geolocation) {
+	      navigator.geolocation.getCurrentPosition(function (position) {
+	        var lat = position.coords.latitude;
+	        var lng = position.coords.longitude;
+	        _this.setState({
+	          lat: lat,
+	          lng: lng,
+	          html5Geolocation: true
+	        });
+	      }, function (error) {
+	        alert(error);
+	      }, { maximumAge: 60000, timeout: 5000, enableHighAccuracy: true });
+	    }
+	
 	    return _this;
 	  }
 	
@@ -95,6 +118,8 @@
 	    value: function submitNewChat() {
 	      var chatName = this.state.chatName;
 	      if (chatName.length == 0) return;
+	      var newChatModal = _reactDom2.default.findDOMNode(this.refs.newChatModal);
+	      var self = this;
 	      app.doAuthenicatedPost({
 	        url: '/chat/new',
 	        data: {
@@ -103,8 +128,31 @@
 	          'lng': this.state.lng
 	        },
 	        callback: function callback(status, data) {
-	          if (status == 'SUCCESS') {} else {
-	            if (data.code == 100) {}
+	          if (status == 'SUCCESS') {
+	            $(newChatModal).modal('hide');
+	            var chats = self.state.availableChats;
+	            chats.push(data);
+	            self.setState({ availableChats: chats });
+	          } else {
+	            if (data.code == 100) {
+	              window.location.replace("/loginPage");
+	            }
+	          }
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'loadChatsInArea',
+	    value: function loadChatsInArea(data) {
+	      var self = this;
+	      app.doGet({
+	        url: '/chat/list',
+	        data: data,
+	        callback: function callback(status, data) {
+	          if (status == 'SUCCESS') {
+	            self.setState({ availableChats: data });
+	          } else {
+	            // do something
 	          }
 	        }
 	      });
@@ -127,7 +175,7 @@
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'modal fade', id: 'newChatModal', role: 'dialog', style: { display: 'none' } },
+	          { className: 'modal fade', id: 'newChatModal', role: 'dialog', style: { display: 'none' }, ref: 'newChatModal' },
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'modal-dialog' },
@@ -190,7 +238,12 @@
 	            )
 	          )
 	        ),
-	        _react2.default.createElement(_GoogleMaps2.default, null)
+	        _react2.default.createElement(_GoogleMaps2.default, {
+	          lat: this.state.lat,
+	          lng: this.state.lng,
+	          html5Geolocation: this.state.html5Geolocation,
+	          pois: this.state.availableChats,
+	          mapLocationUpdate: this.loadChatsInArea.bind(this) })
 	      );
 	    }
 	  }]);
@@ -201,7 +254,7 @@
 	exports.default = AroundMe;
 	
 	
-	(0, _reactDom.render)(_react2.default.createElement(AroundMe, null), document.getElementById('aroundMeDiv'));
+	_reactDom2.default.render(_react2.default.createElement(AroundMe, null), document.getElementById('aroundMeDiv'));
 
 /***/ },
 /* 1 */
@@ -349,45 +402,17 @@
 	} ())
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
-	        //normal enviroments in sane situations
 	        return setTimeout(fun, 0);
+	    } else {
+	        return cachedSetTimeout.call(null, fun, 0);
 	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedSetTimeout(fun, 0);
-	    } catch(e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-	            return cachedSetTimeout.call(null, fun, 0);
-	        } catch(e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-	            return cachedSetTimeout.call(this, fun, 0);
-	        }
-	    }
-	
-	
 	}
 	function runClearTimeout(marker) {
 	    if (cachedClearTimeout === clearTimeout) {
-	        //normal enviroments in sane situations
-	        return clearTimeout(marker);
+	        clearTimeout(marker);
+	    } else {
+	        cachedClearTimeout.call(null, marker);
 	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedClearTimeout(marker);
-	    } catch (e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-	            return cachedClearTimeout.call(null, marker);
-	        } catch (e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-	            return cachedClearTimeout.call(this, marker);
-	        }
-	    }
-	
-	
-	
 	}
 	var queue = [];
 	var draining = false;
@@ -22141,7 +22166,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -22163,47 +22188,109 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var GoogleMaps = function (_React$Component) {
-	  _inherits(GoogleMaps, _React$Component);
+		_inherits(GoogleMaps, _React$Component);
 	
-	  function GoogleMaps() {
-	    _classCallCheck(this, GoogleMaps);
+		function GoogleMaps(props) {
+			_classCallCheck(this, GoogleMaps);
 	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(GoogleMaps).apply(this, arguments));
-	  }
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GoogleMaps).call(this, props));
 	
-	  _createClass(GoogleMaps, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.loadMap();
-	    }
-	  }, {
-	    key: 'loadMap',
-	    value: function loadMap() {
-	      var mapRef = this.refs.map;
-	      var node = _reactDom2.default.findDOMNode(mapRef);
+			_this.markers = [];
+			_this.previousLocation = {};
+			return _this;
+		}
 	
-	      var zoom = 14;
-	      var lat = 37.774929;
-	      var lng = -122.419416;
-	      var center = new google.maps.LatLng(lat, lng);
-	      var mapConfig = Object.assign({}, {
-	        center: center,
-	        zoom: zoom
-	      });
-	      this.map = new google.maps.Map(node, mapConfig);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { id: 'map', ref: 'map' },
-	        'Loading map...'
-	      );
-	    }
-	  }]);
+		_createClass(GoogleMaps, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				this.loadMap();
+			}
+		}, {
+			key: 'componentDidUpdate',
+			value: function componentDidUpdate() {
+				var center = new google.maps.LatLng(this.props.lat, this.props.lng);
+				this.map.panTo(center);
+				this.showGeolocation();
+				this.showPlacesOfInterest();
+				this.mapLocationUpdated();
+			}
+		}, {
+			key: 'loadMap',
+			value: function loadMap() {
+				var node = _reactDom2.default.findDOMNode(this.refs.map);
+				var mapConfig = Object.assign({}, {
+					center: new google.maps.LatLng(this.props.lat, this.props.lng),
+					zoom: 14
+				});
 	
-	  return GoogleMaps;
+				this.map = new google.maps.Map(node, mapConfig);
+				this.showGeolocation();
+				this.showPlacesOfInterest();
+				this.mapLocationUpdated();
+			}
+		}, {
+			key: 'mapLocationUpdated',
+			value: function mapLocationUpdated() {
+				if (!this.map.getBounds()) return;
+				var data = {
+					'topRightLat': this.map.getBounds().getNorthEast().lat(),
+					'topRightLng': this.map.getBounds().getNorthEast().lng(),
+					'bottomLeftLat': this.map.getBounds().getSouthWest().lat(),
+					'bottomLeftLng': this.map.getBounds().getSouthWest().lng()
+				};
+				if (this.previousLocation.topRightLat == data.topRightLat && this.previousLocation.bottomLeftLat == data.bottomLeftLat) return;
+				this.previousLocation = data;
+				this.props.mapLocationUpdate(data);
+			}
+		}, {
+			key: 'showGeolocation',
+			value: function showGeolocation() {
+				if (this.props.html5Geolocation) {
+					var image = {
+						url: '/resources/images/location.png'
+					};
+					if (this.myPos) this.myPos.setMap(null);
+					this.myPos = new google.maps.Marker({
+						position: { lat: this.props.lat, lng: this.props.lng },
+						map: this.map,
+						icon: image
+					});
+				}
+			}
+		}, {
+			key: 'showPlacesOfInterest',
+			value: function showPlacesOfInterest() {
+				var _this2 = this;
+	
+				this.markers.forEach(function (el) {
+					el.setMap(null);
+				});
+				this.markers = [];
+				var pois = this.props.pois;
+				var image = {
+					url: '/resources/images/chat.png'
+				};
+				pois.forEach(function (el, i) {
+					var marker = new google.maps.Marker({
+						position: { lat: el.lat, lng: el.lng },
+						map: _this2.map,
+						icon: image
+					});
+					_this2.markers.push(marker);
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ id: 'map', ref: 'map' },
+					'Loading map...'
+				);
+			}
+		}]);
+	
+		return GoogleMaps;
 	}(_react2.default.Component);
 	
 	exports.default = GoogleMaps;

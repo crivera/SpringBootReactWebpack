@@ -26,8 +26,8 @@ public class TokenService {
 		Key key = new AesKey(Constants.KRYPTO_KEY.getBytes());
 		JsonWebEncryption jwe = new JsonWebEncryption();
 		jwe.setPayload(String.valueOf(user.getId()) + ":" + Clock.systemUTC().millis());
-		jwe.setAlgorithmHeaderValue(KeyManagementAlgorithmIdentifiers.A256KW);
-		jwe.setEncryptionMethodHeaderParameter(ContentEncryptionAlgorithmIdentifiers.AES_256_CBC_HMAC_SHA_512);
+		jwe.setAlgorithmHeaderValue(KeyManagementAlgorithmIdentifiers.A128KW);
+		jwe.setEncryptionMethodHeaderParameter(ContentEncryptionAlgorithmIdentifiers.AES_128_CBC_HMAC_SHA_256);
 		jwe.setKey(key);
 
 		String serializedJwe = jwe.getCompactSerialization();

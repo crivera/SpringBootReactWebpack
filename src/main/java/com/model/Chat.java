@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Chat implements Serializable {
 
@@ -87,21 +88,16 @@ public class Chat implements Serializable {
 	}
 
 	/**
-	 * this is done so that you can choose which fields to return
-	 * 
-	 * @return
-	 */
-	public JSONObject toJSONObject() {
-		return new JSONObject(this);
-	}
-
-	/**
 	 * 
 	 * @return
 	 */
 	public AppError validate() {
 		if (StringUtils.isEmpty(this.getName()))
-			return AppError.create(100, "Name cannot be empty.");
+			return AppError.create(101, "Name cannot be empty.");
+		if (this.getLat() == 0 || this.getLat() > 90 || this.getLat() < -90)
+			return AppError.create(101, "Latitude is wrong.");
+		if (this.getLng() == 0 || this.getLng() > 180 || this.getLng() < -180)
+			return AppError.create(101, "Longitude is wrong.");
 		return null;
 	}
 
@@ -109,6 +105,7 @@ public class Chat implements Serializable {
 	 * 
 	 * @return
 	 */
+	@JsonIgnore
 	public Map<String, ?> getParams() {
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("name", this.getName());

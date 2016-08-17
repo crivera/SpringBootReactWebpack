@@ -14,7 +14,7 @@ public class Constants {
 
 	public static final Map<String, String> STATES = new TreeMap<String, String>();
 
-	public static final String KRYPTO_KEY = "k1mp1zR1ckk1mp1zR1ckk0mp0zR0ck91";
+	public static final String KRYPTO_KEY = "C@t7vnYU3%kd3%fn";
 
 	public static final String AUTH_URL_ACCOUNT_KIT = "/loginWithAccountKit";
 

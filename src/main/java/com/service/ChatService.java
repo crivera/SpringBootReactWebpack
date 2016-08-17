@@ -1,6 +1,7 @@
 package com.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,18 @@ public class ChatService {
 		chat.setTotalUserCount(0);
 		chat.setEnabled(true);
 		return chatDao.save(chat);
+	}
+
+	/**
+	 * 
+	 * @param topRightLat
+	 * @param topRightLng
+	 * @param bottomLeftLat
+	 * @param bottomLeftLng
+	 * @return
+	 */
+	public List<Chat> getChatsInBounds(double topRightLat, double topRightLng, double bottomLeftLat,
+			double bottomLeftLng) {
+		return chatDao.getChatsInBounds(topRightLat, topRightLng, bottomLeftLat, bottomLeftLng);
 	}
 }

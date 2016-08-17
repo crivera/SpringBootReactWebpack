@@ -1,5 +1,7 @@
 package com.dao;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ public class ChatDao {
 	private SimpleJdbcInsert insertChat;
 
 	private BeanPropertyRowMapper<Chat> chatMapper;
-	
+
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		this.insertChat = new SimpleJdbcInsert(dataSource).withTableName("chat").usingGeneratedKeyColumns("id");
@@ -37,6 +39,20 @@ public class ChatDao {
 		Number id = insertChat.executeAndReturnKey(chat.getParams());
 		chat.setId(id.longValue());
 		return chat;
+	}
+
+	/**
+	 * 
+	 * @param topRightLat
+	 * @param topRightLng
+	 * @param bottomLeftLat
+	 * @param bottomLeftLng
+	 * @return
+	 */
+	public List<Chat> getChatsInBounds(double topRightLat, double topRightLng, double bottomLeftLat,
+			double bottomLeftLng) {
+		return jdbcTemplate.query("select * from chat where lat <= ? and lng <= ? and lat >= ? and lng >= ? ", chatMapper, topRightLat, topRightLng, bottomLeftLat,
+				bottomLeftLng);
 	}
 
 }

@@ -2,8 +2,6 @@ package com.model;
 
 import java.io.Serializable;
 
-import org.json.JSONObject;
-
 public class AppError implements Serializable {
 
 	/**
@@ -28,14 +26,6 @@ public class AppError implements Serializable {
 
 	public void setCode(int code) {
 		this.code = code;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public JSONObject toJSONObject() {
-		return new JSONObject(this);
 	}
 
 	/**

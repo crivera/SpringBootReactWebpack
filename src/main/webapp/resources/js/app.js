@@ -12,7 +12,8 @@ var app = {
 	        	request.setRequestHeader("Content-Type", "application/json");
 	        },
 	        url: obj.url,
-	        data: obj.data,
+	        dataType: 'json',
+	        data: JSON.stringify(obj.data),
 	        success: function(result) {
 	        	if (obj.callback)
 	        		obj.callback('SUCCESS', result);
@@ -37,6 +38,7 @@ var app = {
 	        	request.setRequestHeader("Content-Type", "application/json");
 	        },
 	        url: obj.url,
+	        dataType: 'json',
 	        data: obj.data,
 	        success: function(result) {
 	        	if (obj.callback)
@@ -55,6 +57,7 @@ var app = {
 	        	request.setRequestHeader("Content-Type", "application/json");
 	        },
 	        url: obj.url,
+	        dataType: 'json',
 	        data: obj.data,
 	        success: function(result) {
 	        	if (obj.callback)

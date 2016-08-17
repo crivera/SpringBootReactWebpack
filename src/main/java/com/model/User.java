@@ -12,6 +12,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class User implements Serializable, UserDetails {
 
 	/**
@@ -146,6 +148,7 @@ public class User implements Serializable, UserDetails {
 	 * spring security stuff
 	 */
 	@Override
+	@JsonIgnore
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> roles = AuthorityUtils.createAuthorityList("ROLE_USER");
 		return roles;
@@ -167,8 +170,9 @@ public class User implements Serializable, UserDetails {
 	}
 
 	@Override
+	@JsonIgnore
 	public String getPassword() {
-		return "notbeeded";
+		return "notneeded";
 	}
 
 	@Override
@@ -180,6 +184,7 @@ public class User implements Serializable, UserDetails {
 	 * 
 	 * @return
 	 */
+	@JsonIgnore
 	public Map<String, ?> getParams() {
 		Map<String, Object> parameters = new HashMap<>();
 		if (StringUtils.isNotEmpty(this.getEmail()))

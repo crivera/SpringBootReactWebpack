@@ -145,6 +145,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				Authentication responseAuthentication = authenticationManager.authenticate(requestAuthentication);
 				if (responseAuthentication != null && responseAuthentication.isAuthenticated()) {
 					SecurityContextHolder.getContext().setAuthentication(responseAuthentication);
+					((HttpServletResponse) response).addCookie(
+							new Cookie(Constants.TOKEN, ((User) responseAuthentication.getPrincipal()).getToken()));
 					successHandler().onAuthenticationSuccess((HttpServletRequest) request,
 							(HttpServletResponse) response, responseAuthentication);
 					return;
@@ -158,8 +160,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				Authentication responseAuthentication = authenticationManager.authenticate(requestAuthentication);
 				if (responseAuthentication != null && responseAuthentication.isAuthenticated()) {
 					SecurityContextHolder.getContext().setAuthentication(responseAuthentication);
-					((HttpServletResponse) response).addCookie(
-							new Cookie(Constants.TOKEN, ((User) responseAuthentication.getPrincipal()).getToken()));
 				} else {
 					throw new InternalAuthenticationServiceException(
 							"Unable to authenticate Domain User for provided credentials");
@@ -352,9 +352,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				return Optional.of(accessToken);
 			}
 		}
-		for (Cookie cookie : request.getCookies()) {
-			if (cookie.getName().equals(Constants.TOKEN)) {
-				return Optional.of(cookie.getValue());
+		if (request.getCookies() != null) {
+			for (Cookie cookie : request.getCookies()) {
+				if (cookie.getName().equals(Constants.TOKEN)) {
+					return Optional.of(cookie.getValue());
+				}
 			}
 		}
 		return Optional.empty();
