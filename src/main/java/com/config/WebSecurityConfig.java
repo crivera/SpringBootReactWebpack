@@ -8,6 +8,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -73,6 +74,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	FacebookService facebookService;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.security.config.annotation.web.configuration.
+	 * WebSecurityConfigurerAdapter#configure(org.springframework.security.
+	 * config.annotation.web.builders.HttpSecurity)
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
@@ -82,16 +90,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(new AuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.security.config.annotation.web.configuration.
+	 * WebSecurityConfigurerAdapter#configure(org.springframework.security.
+	 * config.annotation.authentication.builders.AuthenticationManagerBuilder)
+	 */
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(new AccountKitAuthenticationProvider());
 		auth.authenticationProvider(new TokenAuthenticationProvider());
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	@Bean
 	public AuthenticationSuccessHandler successHandler() {
 		CustomLoginSuccessHandler successHandler = new CustomLoginSuccessHandler("/aroundMe");
-		successHandler.setUseReferer(true);
+		successHandler.setAlwaysUseDefaultTargetUrl(true);
 		return successHandler;
 	}
 
@@ -114,14 +133,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 
 			Optional<String> token = getAccessToken(httpRequest);
+			Optional<String> accountKitCode = Optional.ofNullable(httpRequest.getParameter("code"));
 
 			String resourcePath = new UrlPathHelper().getPathWithinApplication(httpRequest);
 
 			// check if we should log in with token
-			if (Constants.AUTH_URL_ACCOUNT_KIT.equalsIgnoreCase(resourcePath)
-					&& httpRequest.getMethod().equals("POST")) {
+			if (Constants.AUTH_URL_ACCOUNT_KIT.equalsIgnoreCase(resourcePath) && httpRequest.getMethod().equals("POST")
+					&& accountKitCode.isPresent()) {
 
-				Optional<String> accountKitCode = Optional.ofNullable(httpRequest.getParameter("code"));
 				AuthenticationWithAccountKit requestAuthentication = new AuthenticationWithAccountKit(accountKitCode);
 				Authentication responseAuthentication = authenticationManager.authenticate(requestAuthentication);
 				if (responseAuthentication != null && responseAuthentication.isAuthenticated()) {
@@ -137,8 +156,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				PreAuthenticatedAuthenticationToken requestAuthentication = new PreAuthenticatedAuthenticationToken(
 						token, null);
 				Authentication responseAuthentication = authenticationManager.authenticate(requestAuthentication);
-				if (responseAuthentication != null && !responseAuthentication.isAuthenticated()) {
+				if (responseAuthentication != null && responseAuthentication.isAuthenticated()) {
 					SecurityContextHolder.getContext().setAuthentication(responseAuthentication);
+					((HttpServletResponse) response).addCookie(
+							new Cookie(Constants.TOKEN, ((User) responseAuthentication.getPrincipal()).getToken()));
 				} else {
 					throw new InternalAuthenticationServiceException(
 							"Unable to authenticate Domain User for provided credentials");
@@ -329,6 +350,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// account for things like realms and scopes.
 				String accessToken = header.substring("Bearer ".length());
 				return Optional.of(accessToken);
+			}
+		}
+		for (Cookie cookie : request.getCookies()) {
+			if (cookie.getName().equals(Constants.TOKEN)) {
+				return Optional.of(cookie.getValue());
 			}
 		}
 		return Optional.empty();

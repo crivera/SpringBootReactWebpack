@@ -3,8 +3,11 @@ package com.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -171,6 +174,24 @@ public class User implements Serializable, UserDetails {
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<String, ?> getParams() {
+		Map<String, Object> parameters = new HashMap<>();
+		if (StringUtils.isNotEmpty(this.getEmail()))
+			parameters.put("email", this.getEmail());
+		if (StringUtils.isNotEmpty(this.getPhone()))
+			parameters.put("phone", this.getPhone());
+		parameters.put("account_kit_id", this.getAccountKitId());
+
+		parameters.put("enabled", this.isEnabled());
+		parameters.put("create_date", this.getCreateDate());
+		parameters.put("last_update_date", this.getLastUpdateDate());
+		return parameters;
 	}
 
 }

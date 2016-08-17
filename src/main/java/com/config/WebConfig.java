@@ -44,9 +44,15 @@ public class WebConfig extends WebMvcConfigurerAdapter implements EnvironmentAwa
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
+		super.addInterceptors(registry);
+
 		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
 		localeChangeInterceptor.setParamName(Constants.SPRING_LOCAL_PARAMETER);
 		registry.addInterceptor(localeChangeInterceptor);
+
+		WebHandlerInterceptor webInterceptor = new WebHandlerInterceptor();
+		registry.addInterceptor(webInterceptor);
+
 	}
 
 	/*
@@ -59,7 +65,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements EnvironmentAwa
 	 */
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/login").setViewName("login");
+		// registry.addViewController("/login").setViewName("login");
 	}
 
 	/*

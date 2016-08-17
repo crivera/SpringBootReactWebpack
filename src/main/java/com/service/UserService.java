@@ -1,5 +1,7 @@
 package com.service;
 
+import java.time.LocalDateTime;
+
 import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class UserService {
 	 * @throws GeneralError
 	 */
 	public User create(User user) throws GeneralError {
+		user.setEnabled(true);
+		user.setCreateDate(LocalDateTime.now());
+		user.setLastUpdateDate(LocalDateTime.now());
 		user = userDao.save(user);
 		try {
 			user.setToken(tokenService.createTokenForUser(user));

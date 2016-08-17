@@ -1,68 +1,68 @@
 var app = {
 	doAuthenicatedPost: function(obj){
-		var token = $("#token").val();
 		if (!token){
-			if (data.callback)
-        		callback('ERROR', {'code': 100, 'message': 'Need to log in.'});
+			if (obj.callback)
+				obj.callback('ERROR', {'code': 100, 'message': 'Need to log in.'});
 			return;
 		}
 		$.ajax({
 			type:"POST",
 	        beforeSend: function (request) {
 	        	request.setRequestHeader("Authorization", "Bearer " + token);
+	        	request.setRequestHeader("Content-Type", "application/json");
 	        },
 	        url: obj.url,
 	        data: obj.data,
 	        success: function(result) {
-	        	if (data.callback)
-	        		callback('SUCCESS', result);
+	        	if (obj.callback)
+	        		obj.callback('SUCCESS', result);
 	        }, 
 	        error: function(result){
-	        	if (data.callback)
-	        		callback('ERROR', result);
+	        	if (obj.callback)
+	        		obj.callback('ERROR', result);
 	        }
 	    });
 		
 	},
-	doAuthenticatedGet: function(data){
-		var token = $("#token").val();
+	doAuthenticatedGet: function(obj){
 		if (!token){
-			if (data.callback)
-        		callback('ERROR', {'code': 100, 'message': 'Need to log in.'});
+			if (obj.callback)
+				obj.callback('ERROR', {'code': 100, 'message': 'Need to log in.'});
 			return;
 		}
 		$.ajax({
 			type:"GET",
 	        beforeSend: function (request) {
 	        	request.setRequestHeader("Authorization", "Bearer " + token);
+	        	request.setRequestHeader("Content-Type", "application/json");
 	        },
 	        url: obj.url,
 	        data: obj.data,
 	        success: function(result) {
-	        	if (data.callback)
-	        		callback('SUCCESS', result);
+	        	if (obj.callback)
+	        		obj.callback('SUCCESS', result);
 	        }, 
 	        error: function(result){
-	        	if (data.callback)
-	        		callback('ERROR', result);
+	        	if (obj.callback)
+	        		obj.callback('ERROR', result);
 	        }
 	    });
 	}, 
-	doGet: function(data){
+	doGet: function(obj){
 		$.ajax({
 			type:"GET",
 	        beforeSend: function (request) {
-	        	request.setRequestHeader("Authorization", "Bearer " + token);
+	        	request.setRequestHeader("Content-Type", "application/json");
 	        },
 	        url: obj.url,
 	        data: obj.data,
 	        success: function(result) {
-	        	if (data.callback)
-	        		callback('SUCCESS', result);
+	        	if (obj.callback)
+	        		obj.callback('SUCCESS', result);
 	        }, 
 	        error: function(result){
-	        	if (data.callback)
-	        		callback('ERROR', result);
+	        	if (obj.callback)
+	        		obj.callback('ERROR', result);
 	        }
 	    });
 	}
