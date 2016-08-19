@@ -1,20 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import NewChat from './components/chat/NewChat.js';
 import GoogleMaps from './components/maps/GoogleMaps.js';
-
+import UpdateProfile from './components/profile/UpdateProfile.js';
 
 export default class AroundMe extends React.Component {
   
   constructor(props) {
     super(props);
+    // init default state
     this.state = {
-    		chatName: '', 
     		lat: 37.774929,
         lng: -122.419416,
         html5Geolocation: false,
         availableChats: []
-  	};
+    };
     
+    // get current location
     if (navigator.geolocation) {
     	navigator.geolocation.getCurrentPosition((position) => {
     		const lat = position.coords.latitude;
@@ -30,40 +32,20 @@ export default class AroundMe extends React.Component {
     	{maximumAge:60000, timeout:5000, enableHighAccuracy:true});
     }
     
+    this.getCurrentUser();
   }
   
-  handleInput(event) {
-    this.setState({chatName: event.target.value.substr(0, 30)});
-  }
-  
-  submitNewChat(){
-  	let chatName = this.state.chatName;
-  	if (chatName.length == 0) 
-  		return;
-  	const newChatModal = ReactDOM.findDOMNode(this.refs.newChatModal);
-  	let self = this;
-  	app.doAuthenicatedPost({
-  		url: '/chat/new',
-  		data: {
-  			'name': chatName,
-  			'lat': this.state.lat,
-  			'lng': this.state.lng
-  		}, 
-  		callback: (status, data) => {
-  			if (status == 'SUCCESS'){
-  				$(newChatModal).modal('hide');
-  				let chats = self.state.availableChats;
-  				chats.push(data);
-  				self.setState({availableChats: chats});
-  			} 
-  			else {
-  				if (data.code == 100){
-  					window.location.replace("/loginPage");
-  				}
-  			}
-  		}
-  	});
-  }
+	getCurrentUser(){
+		var self = this;
+		app.doGet({
+    	url: '/profile/currentUser',
+     	callback: (status, data) => {
+     		if (status == 'SUCCESS'){
+     				self.setState({currentUser: data});
+     		}
+     	}
+    });
+	}
   
   loadChatsInArea(data){
 	  let self = this;
@@ -81,37 +63,45 @@ export default class AroundMe extends React.Component {
 	    });
   }
   
+  submitNewChat(chatName, chatModal){
+	  app.doPost({
+		 	url: '/chat/new',
+		 	data: {
+		 		'name': chatName,
+		 		'lat': this.state.lat,
+		 		'lng': this.state.lng
+		 	}, 
+		 	callback: (status, data) => {
+		 		if (status == 'SUCCESS'){
+		 			$(chatModal).modal('hide');
+		 			let chats = self.state.availableChats;
+		 			chats.push(data);
+		 			self.setState({availableChats: chats});
+		 		} 
+		 	}
+	  });
+  }
+  
+  updateUser(user){
+	  this.setState({currentUser: user});
+  }
+  
   render () {
+	  let needsUpdateProfile = (this.state.currentUser && !this.state.currentUser.userName) ? <UpdateProfile 
+			  																																														user={this.state.currentUser} 
+	  																																																updateUser={this.updateUser.bind(this)}/> : '';
   	return (
   		<div>
   			<button className="btn btn-success btn-fab btn-fab-mini btn-round" id="newChatButton" data-toggle="modal" data-target="#newChatModal">
 					<i className="material-icons">add</i>
 					<div className="ripple-container"></div>
 				</button>
-				<div className="modal fade" id="newChatModal" role="dialog" style={{display: 'none'}} ref="newChatModal">
-					<div className="modal-dialog">
-						<div className="modal-content">
-							<div className="modal-header">
-								<button type="button" className="close" data-dismiss="modal">
-									<i className="material-icons">clear</i>
-								</button>
-								<h4 className="modal-title">New Chat</h4>
-							</div>
-							<div className="modal-body">
-								<p>All we need is a name for your chat:</p>
-								<div className="form-group is-empty">
-									<input type="text" value={this.state.chatName} onChange={this.handleInput.bind(this)} placeholder="Name" className="form-control"/>
-			            <span className="material-input"></span>
-			          </div> 
-							</div>
-							<div className="modal-footer">
-								<button onClick={this.submitNewChat.bind(this)} type="button" className="btn btn-default btn-simple">Create<div className="ripple-container"></div></button>
-								<button type="button" className="btn btn-danger btn-simple" data-dismiss="modal">Cancel<div className="ripple-container"><div className="ripple ripple-on ripple-out"></div></div></button>
-							</div>
-						</div>
-					</div>
-				</div>
-  			<GoogleMaps 
+				
+				<NewChat submitNewChat={this.submitNewChat.bind(this) }/>
+				
+				{needsUpdateProfile}
+				
+				<GoogleMaps 
   				lat={this.state.lat} 
   				lng={this.state.lng} 
   				html5Geolocation={this.state.html5Geolocation} 

@@ -91,3 +91,11 @@ export default class GoogleMaps extends React.Component {
 		);
 	}
 }
+
+GoogleMaps.propTypes = { 
+		lat: React.PropTypes.number.isRequired,
+		lng: React.PropTypes.number.isRequired,
+		html5Geolocation: React.PropTypes.bool.isRequired, 
+		pois: React.PropTypes.array.isRequired,
+		mapLocationUpdate: React.PropTypes.func.isRequired
+};

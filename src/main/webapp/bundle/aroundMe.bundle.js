@@ -63,9 +63,17 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
+	var _NewChat = __webpack_require__(/*! ./components/chat/NewChat.js */ 178);
+	
+	var _NewChat2 = _interopRequireDefault(_NewChat);
+	
 	var _GoogleMaps = __webpack_require__(/*! ./components/maps/GoogleMaps.js */ 175);
 	
 	var _GoogleMaps2 = _interopRequireDefault(_GoogleMaps);
+	
+	var _UpdateProfile = __webpack_require__(/*! ./components/profile/UpdateProfile.js */ 176);
+	
+	var _UpdateProfile2 = _interopRequireDefault(_UpdateProfile);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -81,16 +89,17 @@
 	  function AroundMe(props) {
 	    _classCallCheck(this, AroundMe);
 	
+	    // init default state
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AroundMe).call(this, props));
 	
 	    _this.state = {
-	      chatName: '',
 	      lat: 37.774929,
 	      lng: -122.419416,
 	      html5Geolocation: false,
 	      availableChats: []
 	    };
 	
+	    // get current location
 	    if (navigator.geolocation) {
 	      navigator.geolocation.getCurrentPosition(function (position) {
 	        var lat = position.coords.latitude;
@@ -105,38 +114,19 @@
 	      }, { maximumAge: 60000, timeout: 5000, enableHighAccuracy: true });
 	    }
 	
+	    _this.getCurrentUser();
 	    return _this;
 	  }
 	
 	  _createClass(AroundMe, [{
-	    key: 'handleInput',
-	    value: function handleInput(event) {
-	      this.setState({ chatName: event.target.value.substr(0, 30) });
-	    }
-	  }, {
-	    key: 'submitNewChat',
-	    value: function submitNewChat() {
-	      var chatName = this.state.chatName;
-	      if (chatName.length == 0) return;
-	      var newChatModal = _reactDom2.default.findDOMNode(this.refs.newChatModal);
+	    key: 'getCurrentUser',
+	    value: function getCurrentUser() {
 	      var self = this;
-	      app.doAuthenicatedPost({
-	        url: '/chat/new',
-	        data: {
-	          'name': chatName,
-	          'lat': this.state.lat,
-	          'lng': this.state.lng
-	        },
+	      app.doGet({
+	        url: '/profile/currentUser',
 	        callback: function callback(status, data) {
 	          if (status == 'SUCCESS') {
-	            $(newChatModal).modal('hide');
-	            var chats = self.state.availableChats;
-	            chats.push(data);
-	            self.setState({ availableChats: chats });
-	          } else {
-	            if (data.code == 100) {
-	              window.location.replace("/loginPage");
-	            }
+	            self.setState({ currentUser: data });
 	          }
 	        }
 	      });
@@ -158,8 +148,36 @@
 	      });
 	    }
 	  }, {
+	    key: 'submitNewChat',
+	    value: function submitNewChat(chatName, chatModal) {
+	      app.doPost({
+	        url: '/chat/new',
+	        data: {
+	          'name': chatName,
+	          'lat': this.state.lat,
+	          'lng': this.state.lng
+	        },
+	        callback: function callback(status, data) {
+	          if (status == 'SUCCESS') {
+	            $(chatModal).modal('hide');
+	            var chats = self.state.availableChats;
+	            chats.push(data);
+	            self.setState({ availableChats: chats });
+	          }
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'updateUser',
+	    value: function updateUser(user) {
+	      this.setState({ currentUser: user });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var needsUpdateProfile = this.state.currentUser && !this.state.currentUser.userName ? _react2.default.createElement(_UpdateProfile2.default, {
+	        user: this.state.currentUser,
+	        updateUser: this.updateUser.bind(this) }) : '';
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -173,71 +191,8 @@
 	          ),
 	          _react2.default.createElement('div', { className: 'ripple-container' })
 	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'modal fade', id: 'newChatModal', role: 'dialog', style: { display: 'none' }, ref: 'newChatModal' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'modal-dialog' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'modal-content' },
-	              _react2.default.createElement(
-	                'div',
-	                { className: 'modal-header' },
-	                _react2.default.createElement(
-	                  'button',
-	                  { type: 'button', className: 'close', 'data-dismiss': 'modal' },
-	                  _react2.default.createElement(
-	                    'i',
-	                    { className: 'material-icons' },
-	                    'clear'
-	                  )
-	                ),
-	                _react2.default.createElement(
-	                  'h4',
-	                  { className: 'modal-title' },
-	                  'New Chat'
-	                )
-	              ),
-	              _react2.default.createElement(
-	                'div',
-	                { className: 'modal-body' },
-	                _react2.default.createElement(
-	                  'p',
-	                  null,
-	                  'All we need is a name for your chat:'
-	                ),
-	                _react2.default.createElement(
-	                  'div',
-	                  { className: 'form-group is-empty' },
-	                  _react2.default.createElement('input', { type: 'text', value: this.state.chatName, onChange: this.handleInput.bind(this), placeholder: 'Name', className: 'form-control' }),
-	                  _react2.default.createElement('span', { className: 'material-input' })
-	                )
-	              ),
-	              _react2.default.createElement(
-	                'div',
-	                { className: 'modal-footer' },
-	                _react2.default.createElement(
-	                  'button',
-	                  { onClick: this.submitNewChat.bind(this), type: 'button', className: 'btn btn-default btn-simple' },
-	                  'Create',
-	                  _react2.default.createElement('div', { className: 'ripple-container' })
-	                ),
-	                _react2.default.createElement(
-	                  'button',
-	                  { type: 'button', className: 'btn btn-danger btn-simple', 'data-dismiss': 'modal' },
-	                  'Cancel',
-	                  _react2.default.createElement(
-	                    'div',
-	                    { className: 'ripple-container' },
-	                    _react2.default.createElement('div', { className: 'ripple ripple-on ripple-out' })
-	                  )
-	                )
-	              )
-	            )
-	          )
-	        ),
+	        _react2.default.createElement(_NewChat2.default, { submitNewChat: this.submitNewChat.bind(this) }),
+	        needsUpdateProfile,
 	        _react2.default.createElement(_GoogleMaps2.default, {
 	          lat: this.state.lat,
 	          lng: this.state.lng,
@@ -22294,6 +22249,337 @@
 	}(_react2.default.Component);
 	
 	exports.default = GoogleMaps;
+	
+	
+	GoogleMaps.propTypes = {
+		lat: _react2.default.PropTypes.number.isRequired,
+		lng: _react2.default.PropTypes.number.isRequired,
+		html5Geolocation: _react2.default.PropTypes.bool.isRequired,
+		pois: _react2.default.PropTypes.array.isRequired,
+		mapLocationUpdate: _react2.default.PropTypes.func.isRequired
+	};
+
+/***/ },
+/* 176 */
+/*!*****************************************************************!*\
+  !*** ./src/main/webapp/jsx/components/profile/UpdateProfile.js ***!
+  \*****************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 35);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var UpdateProfile = function (_React$Component) {
+		_inherits(UpdateProfile, _React$Component);
+	
+		function UpdateProfile(props) {
+			_classCallCheck(this, UpdateProfile);
+	
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UpdateProfile).call(this, props));
+	
+			_this.state = {
+				email: _this.props.user.email ? _this.props.user.email : '',
+				userName: _this.props.user.userName ? _this.props.user.userName : '',
+				errorClass: ''
+			};
+			return _this;
+		}
+	
+		_createClass(UpdateProfile, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				var updateProfileModal = _reactDom2.default.findDOMNode(this.refs.updateProfileModal);
+				$(updateProfileModal).modal('show');
+			}
+		}, {
+			key: 'handleInput',
+			value: function handleInput(field, event) {
+				var change = {};
+				change[field] = event.target.value;
+				change['errorClass'] = '';
+				this.setState(change);
+			}
+		}, {
+			key: 'updateProfile',
+			value: function updateProfile() {
+				var _this2 = this;
+	
+				if (this.state.userName.length == 0) {
+					this.setState({ errorClass: 'has-error' });
+					return;
+				}
+				app.doPost({
+					url: '/profile/update',
+					data: {
+						'userName': this.state.userName,
+						'email': this.state.email
+					},
+					callback: function callback(status, data) {
+						if (status == 'SUCCESS') {
+							var updateProfileModal = _reactDom2.default.findDOMNode(_this2.refs.updateProfileModal);
+							$(updateProfileModal).modal('hide');
+							_this2.props.updateUser(data);
+						}
+					}
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var inputClassName = 'input-group ' + this.state.errorClass;
+	
+				return _react2.default.createElement(
+					'div',
+					{ className: 'modal fade', id: 'updateProfileModal', role: 'dialog', ref: 'updateProfileModal', 'data-backdrop': 'static', 'data-keyboard': 'false' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal-dialog' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-content' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-header' },
+								_react2.default.createElement(
+									'h4',
+									{ className: 'modal-title' },
+									'Update Profile'
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-body' },
+								_react2.default.createElement(
+									'p',
+									null,
+									'We need to know a little more about you before we start:'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: inputClassName },
+									_react2.default.createElement(
+										'span',
+										{ className: 'input-group-addon' },
+										_react2.default.createElement(
+											'i',
+											{ className: 'material-icons' },
+											'face'
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'form-group is-empty' },
+										_react2.default.createElement('input', { type: 'text', value: this.state.userName, onChange: this.handleInput.bind(this, 'userName'), placeholder: '* Username...', className: 'form-control', required: true }),
+										_react2.default.createElement('span', { className: 'material-input' })
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'input-group' },
+									_react2.default.createElement(
+										'span',
+										{ className: 'input-group-addon' },
+										_react2.default.createElement(
+											'i',
+											{ className: 'material-icons' },
+											'email'
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'form-group is-empty' },
+										_react2.default.createElement('input', { type: 'text', value: this.state.email, onChange: this.handleInput.bind(this, 'email'), placeholder: 'Email...', className: 'form-control' }),
+										_react2.default.createElement('span', { className: 'material-input' })
+									)
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-footer' },
+								_react2.default.createElement(
+									'button',
+									{ onClick: this.updateProfile.bind(this), type: 'button', className: 'btn btn-default' },
+									'Update',
+									_react2.default.createElement('div', { className: 'ripple-container' })
+								)
+							)
+						)
+					)
+				);
+			}
+		}]);
+	
+		return UpdateProfile;
+	}(_react2.default.Component);
+	
+	exports.default = UpdateProfile;
+	
+	
+	UpdateProfile.propTypes = {
+		user: _react2.default.PropTypes.object.isRequired,
+		updateUser: _react2.default.PropTypes.func.isRequired
+	};
+
+/***/ },
+/* 177 */,
+/* 178 */
+/*!********************************************************!*\
+  !*** ./src/main/webapp/jsx/components/chat/NewChat.js ***!
+  \********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 35);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var NewChat = function (_React$Component) {
+		_inherits(NewChat, _React$Component);
+	
+		function NewChat(props) {
+			_classCallCheck(this, NewChat);
+	
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NewChat).call(this, props));
+	
+			_this.state = {
+				chatName: ''
+			};
+			return _this;
+		}
+	
+		_createClass(NewChat, [{
+			key: 'handleInput',
+			value: function handleInput(event) {
+				this.setState({ chatName: event.target.value.substr(0, 30) });
+			}
+		}, {
+			key: 'submitNewChat',
+			value: function submitNewChat() {
+				var chatName = this.state.chatName;
+				if (chatName.length == 0) return;
+				var newChatModal = _reactDom2.default.findDOMNode(this.refs.newChatModal);
+				this.props.submitNewChat(chatName, newChatModal);
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'modal fade', id: 'newChatModal', role: 'dialog', style: { display: 'none' }, ref: 'newChatModal' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal-dialog' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-content' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-header' },
+								_react2.default.createElement(
+									'button',
+									{ type: 'button', className: 'close', 'data-dismiss': 'modal' },
+									_react2.default.createElement(
+										'i',
+										{ className: 'material-icons' },
+										'clear'
+									)
+								),
+								_react2.default.createElement(
+									'h4',
+									{ className: 'modal-title' },
+									'New Chat'
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-body' },
+								_react2.default.createElement(
+									'p',
+									null,
+									'All we need is a name for your chat:'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'form-group is-empty' },
+									_react2.default.createElement('input', { type: 'text', value: this.state.chatName, onChange: this.handleInput.bind(this), placeholder: 'Name', className: 'form-control' }),
+									_react2.default.createElement('span', { className: 'material-input' })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-footer' },
+								_react2.default.createElement(
+									'button',
+									{ onClick: this.submitNewChat.bind(this), type: 'button', className: 'btn btn-default btn-simple' },
+									'Create',
+									_react2.default.createElement('div', { className: 'ripple-container' })
+								),
+								_react2.default.createElement(
+									'button',
+									{ type: 'button', className: 'btn btn-danger btn-simple', 'data-dismiss': 'modal' },
+									'Cancel',
+									_react2.default.createElement(
+										'div',
+										{ className: 'ripple-container' },
+										_react2.default.createElement('div', { className: 'ripple ripple-on ripple-out' })
+									)
+								)
+							)
+						)
+					)
+				);
+			}
+		}]);
+	
+		return NewChat;
+	}(_react2.default.Component);
+	
+	exports.default = NewChat;
+	
+	
+	NewChat.propTypes = {
+		submitNewChat: _react2.default.PropTypes.func.isRequired
+	};
 
 /***/ }
 /******/ ]);

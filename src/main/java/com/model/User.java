@@ -198,5 +198,5 @@ public class User implements Serializable, UserDetails {
 		parameters.put("last_update_date", this.getLastUpdateDate());
 		return parameters;
 	}
-
+	
 }

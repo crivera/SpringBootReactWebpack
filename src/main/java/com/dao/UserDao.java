@@ -64,7 +64,11 @@ public class UserDao {
 	 * @return
 	 */
 	public User update(User user) {
-		return null;
+		jdbcTemplate.update(
+				"update user set username = ?, email = ?, profile_pic_url = ?, enabled = ?, last_update_date = ? where id = ?",
+				user.getUserName(), user.getEmail(), user.getProfilePicUrl(), user.isEnabled(),
+				user.getLastUpdateDate(), user.getId());
+		return user;
 	}
 
 }

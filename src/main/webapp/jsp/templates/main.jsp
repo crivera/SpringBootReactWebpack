@@ -130,9 +130,5 @@
 		<script src="/resources/js/app.js" type="text/javascript"></script>
 		
 		<sitemesh:write property="page.javascript"/>
-		
-		<script type="text/javascript">
-			var token = "${token}";
-		</script>
 	</body>
 </html>

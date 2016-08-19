@@ -43,10 +43,12 @@ public class UserService {
 	/**
 	 * 
 	 * @param user
+	 * @return
 	 * @throws OnAireException
 	 */
-	public void updateUser(User user) {
-
+	public User updateUser(User user) {
+		user.setLastUpdateDate(LocalDateTime.now());
+		return userDao.update(user);
 	}
 
 	/**
