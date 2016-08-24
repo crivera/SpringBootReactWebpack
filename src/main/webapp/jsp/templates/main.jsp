@@ -78,11 +78,20 @@
 								<i class="material-icons">near_me</i> Around Me
 							</a>
 						</li>
-						<li>
-							<a href="/loginPage">
-								<i class="material-icons">account_circle</i> Login
-							</a>
-						</li>
+						<sec:authorize access="isAnonymous()">
+							<li>
+								<a href="/loginPage">
+									<i class="material-icons">account_circle</i> Login
+								</a>
+							</li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USER')">
+							<li>
+								<a href="/loginPage">
+									<i class="material-icons">face</i> Profile
+								</a>
+							</li>
+						</sec:authorize>
 					</ul>
 	    		</div>
 			</div>
