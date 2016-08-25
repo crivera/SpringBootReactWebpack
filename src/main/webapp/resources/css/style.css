@@ -57,13 +57,9 @@ a img {
 	z-index: 1;
 }
 
-#chatModal {
-	position: absolute;
-	z-index: 2;
-	right: 1vw;
-	bottom: 0vh;
-}
-
-footer {
-	z-index: 3;
+.modal-admin {
+	width: 150vw;
+	margin-top: 100px;
+	margin-left: auto;
+	margin-right: auto;	
 }

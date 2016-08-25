@@ -63,19 +63,19 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _ErrorNotification = __webpack_require__(/*! ./components/ErrorNotification.js */ 178);
+	var _ErrorNotification = __webpack_require__(/*! ./components/ErrorNotification.js */ 175);
 	
 	var _ErrorNotification2 = _interopRequireDefault(_ErrorNotification);
 	
-	var _NewChat = __webpack_require__(/*! ./components/chat/NewChat.js */ 175);
+	var _NewChat = __webpack_require__(/*! ./components/chat/NewChat.js */ 176);
 	
 	var _NewChat2 = _interopRequireDefault(_NewChat);
 	
-	var _GoogleMaps = __webpack_require__(/*! ./components/maps/GoogleMaps.js */ 176);
+	var _GoogleMaps = __webpack_require__(/*! ./components/maps/GoogleMaps.js */ 177);
 	
 	var _GoogleMaps2 = _interopRequireDefault(_GoogleMaps);
 	
-	var _UpdateProfile = __webpack_require__(/*! ./components/profile/UpdateProfile.js */ 177);
+	var _UpdateProfile = __webpack_require__(/*! ./components/profile/UpdateProfile.js */ 178);
 	
 	var _UpdateProfile2 = _interopRequireDefault(_UpdateProfile);
 	
@@ -22183,6 +22183,110 @@
 
 /***/ },
 /* 175 */
+/*!*************************************************************!*\
+  !*** ./src/main/webapp/jsx/components/ErrorNotification.js ***!
+  \*************************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 35);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var ErrorNotification = function (_React$Component) {
+		_inherits(ErrorNotification, _React$Component);
+	
+		function ErrorNotification(props) {
+			_classCallCheck(this, ErrorNotification);
+	
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(ErrorNotification).call(this, props));
+		}
+	
+		_createClass(ErrorNotification, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				setTimeout(this.closeErrorMessage.bind(this), 5000);
+			}
+		}, {
+			key: 'closeErrorMessage',
+			value: function closeErrorMessage() {
+				this.props.clear();
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'alert alert-danger' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'container-fluid' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'alert-icon' },
+							_react2.default.createElement(
+								'i',
+								{ className: 'material-icons' },
+								'error_outline'
+							)
+						),
+						_react2.default.createElement(
+							'button',
+							{ ref: 'closeButton', type: 'button', className: 'close', 'data-dismiss': 'alert', 'aria-label': 'Close', onClick: this.closeErrorMessage.bind(this) },
+							_react2.default.createElement(
+								'span',
+								{ 'aria-hidden': 'true' },
+								_react2.default.createElement(
+									'i',
+									{ className: 'material-icons' },
+									'clear'
+								)
+							)
+						),
+						_react2.default.createElement(
+							'b',
+							null,
+							'Error:'
+						),
+						' ',
+						this.props.errorMessage
+					)
+				);
+			}
+		}]);
+	
+		return ErrorNotification;
+	}(_react2.default.Component);
+	
+	exports.default = ErrorNotification;
+	
+	
+	ErrorNotification.propTypes = {
+		errorMessage: _react2.default.PropTypes.string.isRequired,
+		clear: _react2.default.PropTypes.func.isRequired
+	};
+
+/***/ },
+/* 176 */
 /*!********************************************************!*\
   !*** ./src/main/webapp/jsx/components/chat/NewChat.js ***!
   \********************************************************/
@@ -22330,7 +22434,7 @@
 	};
 
 /***/ },
-/* 176 */
+/* 177 */
 /*!***********************************************************!*\
   !*** ./src/main/webapp/jsx/components/maps/GoogleMaps.js ***!
   \***********************************************************/
@@ -22525,7 +22629,7 @@
 	};
 
 /***/ },
-/* 177 */
+/* 178 */
 /*!*****************************************************************!*\
   !*** ./src/main/webapp/jsx/components/profile/UpdateProfile.js ***!
   \*****************************************************************/
@@ -22707,110 +22811,6 @@
 	};
 
 /***/ },
-/* 178 */
-/*!*************************************************************!*\
-  !*** ./src/main/webapp/jsx/components/ErrorNotification.js ***!
-  \*************************************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 35);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var ErrorNotification = function (_React$Component) {
-		_inherits(ErrorNotification, _React$Component);
-	
-		function ErrorNotification(props) {
-			_classCallCheck(this, ErrorNotification);
-	
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(ErrorNotification).call(this, props));
-		}
-	
-		_createClass(ErrorNotification, [{
-			key: 'componentDidMount',
-			value: function componentDidMount() {
-				setTimeout(this.closeErrorMessage.bind(this), 5000);
-			}
-		}, {
-			key: 'closeErrorMessage',
-			value: function closeErrorMessage() {
-				this.props.clear();
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(
-					'div',
-					{ className: 'alert alert-danger' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'container-fluid' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'alert-icon' },
-							_react2.default.createElement(
-								'i',
-								{ className: 'material-icons' },
-								'error_outline'
-							)
-						),
-						_react2.default.createElement(
-							'button',
-							{ ref: 'closeButton', type: 'button', className: 'close', 'data-dismiss': 'alert', 'aria-label': 'Close', onClick: this.closeErrorMessage.bind(this) },
-							_react2.default.createElement(
-								'span',
-								{ 'aria-hidden': 'true' },
-								_react2.default.createElement(
-									'i',
-									{ className: 'material-icons' },
-									'clear'
-								)
-							)
-						),
-						_react2.default.createElement(
-							'b',
-							null,
-							'Error:'
-						),
-						' ',
-						this.props.errorMessage
-					)
-				);
-			}
-		}]);
-	
-		return ErrorNotification;
-	}(_react2.default.Component);
-	
-	exports.default = ErrorNotification;
-	
-	
-	ErrorNotification.propTypes = {
-		errorMessage: _react2.default.PropTypes.string.isRequired,
-		clear: _react2.default.PropTypes.func.isRequired
-	};
-
-/***/ },
 /* 179 */
 /*!*****************************************************!*\
   !*** ./src/main/webapp/jsx/components/chat/Chat.js ***!
@@ -22852,7 +22852,10 @@
 	
 		_createClass(Chat, [{
 			key: 'componentDidMount',
-			value: function componentDidMount() {}
+			value: function componentDidMount() {
+				var chatModal = _reactDom2.default.findDOMNode(this.refs.chatModal);
+				$(chatModal).modal('show');
+			}
 		}, {
 			key: 'componentDidUpdate',
 			value: function componentDidUpdate() {}
@@ -22861,33 +22864,45 @@
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					{ className: 'col-md-6', id: 'chatModal' },
+					{ className: 'modal fade', id: 'chatModal', role: 'dialog', ref: 'chatModal' },
 					_react2.default.createElement(
 						'div',
-						{ className: 'card card-nav-tabs' },
+						{ className: 'modal-admin' },
 						_react2.default.createElement(
 							'div',
-							{ className: 'header header-success' },
+							{ className: 'modal-content' },
 							_react2.default.createElement(
 								'div',
-								{ className: 'nav-tabs-navigation' },
+								{ className: 'col-md-6' },
 								_react2.default.createElement(
 									'div',
-									{ className: 'nav-tabs-wrapper' },
-									_react2.default.createElement('ul', { className: 'nav nav-tabs', 'data-tabs': 'tabs' })
-								)
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'content' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'tab-pane', id: 'chat' },
-								_react2.default.createElement(
-									'p',
-									null,
-									'I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at. So when you get something that has the name Kanye West on it, it’s supposed to be pushing the furthest possibilities. I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus.'
+									{ className: 'card card-nav-tabs' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'header header-success' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'nav-tabs-navigation' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'nav-tabs-wrapper' },
+												_react2.default.createElement('ul', { className: 'nav nav-tabs', 'data-tabs': 'tabs' })
+											)
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'content' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'tab-pane', id: 'chat' },
+											_react2.default.createElement(
+												'p',
+												null,
+												'I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at. So when you get something that has the name Kanye West on it, it’s supposed to be pushing the furthest possibilities. I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus.'
+											)
+										)
+									)
 								)
 							)
 						)
