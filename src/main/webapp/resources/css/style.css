@@ -56,3 +56,14 @@ a img {
 	right: 1vw;
 	z-index: 1;
 }
+
+#chatModal {
+	position: absolute;
+	z-index: 2;
+	right: 1vw;
+	bottom: 0vh;
+}
+
+footer {
+	z-index: 3;
+}

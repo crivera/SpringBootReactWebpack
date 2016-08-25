@@ -6,10 +6,15 @@ export default class NewChat extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-	    		chatName: ''
+	    	chatName: ''
 		};
 	}
 
+	componentDidMount(){
+		const newChatModal = ReactDOM.findDOMNode(this.refs.newChatModal);
+		$(newChatModal).modal('show');
+	}
+	
 	handleInput(event) {
 	   this.setState({chatName: event.target.value.substr(0, 30)});
 	}
@@ -19,12 +24,13 @@ export default class NewChat extends React.Component {
 	 	if (chatName.length == 0) 
 	 		return;
 	 	const newChatModal = ReactDOM.findDOMNode(this.refs.newChatModal);
-	 	this.props.submitNewChat(chatName, newChatModal);
+		$(newChatModal).modal('hide');
+	 	this.props.submitNewChat(chatName, this.props.lat, this.props.lng);
 	}
 	
 	render () {
 	  return (
-	  		<div className="modal fade" id="newChatModal" role="dialog" style={{display: 'none'}} ref="newChatModal">
+	  		<div className="modal fade" id="newChatModal" role="dialog" ref="newChatModal">
 					<div className="modal-dialog">
 						<div className="modal-content">
 							<div className="modal-header">
@@ -52,5 +58,7 @@ export default class NewChat extends React.Component {
 }
 
 NewChat.propTypes = { 
-		submitNewChat: React.PropTypes.func.isRequired
+		submitNewChat: React.PropTypes.func.isRequired,
+		lat: React.PropTypes.number.isRequired,
+		lng: React.PropTypes.number.isRequired
 };
