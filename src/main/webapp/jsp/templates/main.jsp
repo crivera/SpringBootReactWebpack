@@ -87,7 +87,7 @@
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USER')">
 							<li>
-								<a href="/loginPage">
+								<a href="/profile">
 									<i class="material-icons">face</i> Profile
 								</a>
 							</li>

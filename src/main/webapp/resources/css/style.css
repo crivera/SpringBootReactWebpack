@@ -57,9 +57,27 @@ a img {
 	z-index: 1;
 }
 
-.modal-admin {
-	width: 150vw;
-	margin-top: 100px;
-	margin-left: auto;
-	margin-right: auto;	
+.modal-dialog.large {
+	width: 80vw;
+}
+
+.messageForm input {
+	width: 95%;
+}
+
+#chatHolder {
+	height: 50vh;
+	padding-left: 50px;
+	padding-right: 20px;
+	overflow-y: auto;
+}
+
+.addSpace {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.vertical-align {
+  align-items: center;
+  display: flex !important;
 }

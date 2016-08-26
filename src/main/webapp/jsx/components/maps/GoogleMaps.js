@@ -106,7 +106,7 @@ export default class GoogleMaps extends React.Component {
 		  });
 		  
 		  marker.addListener('mouseover', () => {
-			    infowindow.open(this.map, this);
+			    infowindow.open(this.map, marker);
 			});
 
 			// assuming you also want to hide the infowindow when user mouses-out

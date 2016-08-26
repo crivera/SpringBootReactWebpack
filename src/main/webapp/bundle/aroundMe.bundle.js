@@ -22587,7 +22587,7 @@
 					});
 	
 					marker.addListener('mouseover', function () {
-						infowindow.open(_this4.map, _this4);
+						infowindow.open(_this4.map, marker);
 					});
 	
 					// assuming you also want to hide the infowindow when user mouses-out
@@ -22833,6 +22833,14 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
+	var _ChatEntry = __webpack_require__(/*! ./ChatEntry.js */ 180);
+	
+	var _ChatEntry2 = _interopRequireDefault(_ChatEntry);
+	
+	var _ChatWindow = __webpack_require__(/*! ./ChatWindow.js */ 181);
+	
+	var _ChatWindow2 = _interopRequireDefault(_ChatWindow);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22847,59 +22855,181 @@
 		function Chat(props) {
 			_classCallCheck(this, Chat);
 	
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Chat).call(this, props));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Chat).call(this, props));
+	
+			_this.state = {
+				messages: []
+			};
+			return _this;
 		}
 	
 		_createClass(Chat, [{
 			key: 'componentDidMount',
-			value: function componentDidMount() {
-				var chatModal = _reactDom2.default.findDOMNode(this.refs.chatModal);
-				$(chatModal).modal('show');
-			}
+			value: function componentDidMount() {}
 		}, {
 			key: 'componentDidUpdate',
-			value: function componentDidUpdate() {}
+			value: function componentDidUpdate() {
+				var _this2 = this;
+	
+				if (this.props.id > 0) {
+					var chatModal = _reactDom2.default.findDOMNode(this.refs.chatModal);
+					$(chatModal).modal('show');
+					var ws = new WebSocket("ws://localhost:8080/socket");
+					this.stompClient = Stomp.over(ws);
+					this.subscribeEndpoint = "/chat/" + this.props.id;
+					this.publishEndpoint = "/app" + this.subscribeEndpoint;
+	
+					this.stompClient.connect({}, function (frame) {
+	
+						// subscribe to all the stuff we need
+						_this2.stompClient.subscribe(_this2.subscribeEndpoint + "/join", function (data) {
+							var user = JSON.parse(data.body);
+							//debugger;
+						});
+	
+						_this2.stompClient.subscribe(_this2.subscribeEndpoint + "/leave", function (data) {
+							var user = JSON.parse(data.body);
+							//debugger;
+						});
+	
+						_this2.stompClient.subscribe(_this2.subscribeEndpoint + "/message", function (data) {
+							var message = JSON.parse(data.body);
+							var messages = _this2.state.messages;
+							messages.push(message);
+							_this2.setState({
+								messages: messages
+							});
+						});
+	
+						// send that we joined
+						_this2.stompClient.send(_this2.publishEndpoint + "/join", {}, {});
+					});
+				}
+			}
+		}, {
+			key: 'leaveChat',
+			value: function leaveChat() {
+				var chatModal = _reactDom2.default.findDOMNode(this.refs.chatModal);
+				$(chatModal).modal('hide');
+	
+				if (this.stompClient) {
+					// send that we left
+					this.stompClient.send(this.publishEndpoint + "/leave", {}, {});
+					this.stompClient.disconnect();
+				}
+				this.props.leaveChat(this.props.id);
+			}
+		}, {
+			key: 'componentWillUnmount',
+			value: function componentWillUnmount() {
+				if (this.stompClient) {
+					// send that we left
+					this.stompClient.send(this.publishEndpoint + "/leave", {}, {});
+					this.stompClient.disconnect();
+				}
+			}
+		}, {
+			key: 'sendMessage',
+			value: function sendMessage(message) {
+				this.stompClient.send(this.publishEndpoint + "/message", {}, JSON.stringify({ 'message': message }));
+			}
 		}, {
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					{ className: 'modal fade', id: 'chatModal', role: 'dialog', ref: 'chatModal' },
+					{ className: 'modal fade', id: 'chatModal', role: 'dialog', ref: 'chatModal', 'data-backdrop': 'static' },
 					_react2.default.createElement(
 						'div',
-						{ className: 'modal-admin' },
+						{ className: 'modal-dialog large' },
 						_react2.default.createElement(
 							'div',
 							{ className: 'modal-content' },
 							_react2.default.createElement(
 								'div',
-								{ className: 'col-md-6' },
+								{ className: 'card card-nav-tabs' },
 								_react2.default.createElement(
 									'div',
-									{ className: 'card card-nav-tabs' },
+									{ className: 'header header-success' },
 									_react2.default.createElement(
 										'div',
-										{ className: 'header header-success' },
+										{ className: 'nav-tabs-navigation' },
 										_react2.default.createElement(
 											'div',
-											{ className: 'nav-tabs-navigation' },
+											{ className: 'nav-tabs-wrapper' },
 											_react2.default.createElement(
-												'div',
-												{ className: 'nav-tabs-wrapper' },
-												_react2.default.createElement('ul', { className: 'nav nav-tabs', 'data-tabs': 'tabs' })
+												'ul',
+												{ className: 'nav nav-tabs', 'data-tabs': 'tabs' },
+												_react2.default.createElement(
+													'li',
+													{ className: 'active' },
+													_react2.default.createElement(
+														'a',
+														{ href: '#chat', 'data-toggle': 'tab', 'aria-expanded': 'false' },
+														_react2.default.createElement(
+															'i',
+															{ className: 'material-icons' },
+															'chat'
+														),
+														'Chat',
+														_react2.default.createElement('div', { className: 'ripple-container' })
+													)
+												),
+												_react2.default.createElement(
+													'li',
+													null,
+													_react2.default.createElement(
+														'a',
+														{ href: '#users', 'data-toggle': 'tab', 'aria-expanded': 'true' },
+														_react2.default.createElement(
+															'i',
+															{ className: 'material-icons' },
+															'faces'
+														),
+														'Users',
+														_react2.default.createElement('div', { className: 'ripple-container' })
+													)
+												),
+												_react2.default.createElement(
+													'li',
+													{ className: 'pull-right' },
+													_react2.default.createElement(
+														'a',
+														null,
+														_react2.default.createElement(
+															'button',
+															{ type: 'button', className: 'close', onClick: this.leaveChat.bind(this) },
+															_react2.default.createElement(
+																'i',
+																{ className: 'material-icons' },
+																'clear'
+															)
+														)
+													)
+												)
 											)
 										)
-									),
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'content', style: { 'minHeight': '60vh' } },
 									_react2.default.createElement(
 										'div',
-										{ className: 'content' },
+										{ className: 'tab-content text-center' },
 										_react2.default.createElement(
 											'div',
-											{ className: 'tab-pane', id: 'chat' },
+											{ className: 'tab-pane active', id: 'chat' },
+											_react2.default.createElement(_ChatWindow2.default, { messages: this.state.messages }),
+											_react2.default.createElement(_ChatEntry2.default, { onMessageSubmit: this.sendMessage.bind(this) })
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'tab-pane', id: 'users' },
 											_react2.default.createElement(
 												'p',
 												null,
-												'I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at. So when you get something that has the name Kanye West on it, it’s supposed to be pushing the furthest possibilities. I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus.'
+												' I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at. I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus. I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at.'
 											)
 										)
 									)
@@ -22920,6 +23050,221 @@
 	Chat.propTypes = {
 		id: _react2.default.PropTypes.number.isRequired,
 		leaveChat: _react2.default.PropTypes.func.isRequired
+	};
+
+/***/ },
+/* 180 */
+/*!**********************************************************!*\
+  !*** ./src/main/webapp/jsx/components/chat/ChatEntry.js ***!
+  \**********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 35);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var ChatEntry = function (_React$Component) {
+		_inherits(ChatEntry, _React$Component);
+	
+		function ChatEntry(props) {
+			_classCallCheck(this, ChatEntry);
+	
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ChatEntry).call(this, props));
+	
+			_this.state = {
+				message: ''
+			};
+			return _this;
+		}
+	
+		_createClass(ChatEntry, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				_reactDom2.default.findDOMNode(this.refs.textInput).focus();
+			}
+		}, {
+			key: 'handleSubmit',
+			value: function handleSubmit(e) {
+				e.preventDefault();
+				if (this.state.message.length == 0) return;
+				this.props.onMessageSubmit(this.state.message);
+				this.setState({ message: '' });
+			}
+		}, {
+			key: 'handleEnterKey',
+			value: function handleEnterKey(e) {
+				if (e.key == 'Enter') {
+					this.handleSubmit(e);
+				}
+			}
+		}, {
+			key: 'handleInput',
+			value: function handleInput(event) {
+				this.setState({ message: event.target.value });
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'messageForm' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'input-group' },
+						_react2.default.createElement(
+							'span',
+							{ className: 'input-group-addon' },
+							_react2.default.createElement(
+								'i',
+								{ className: 'material-icons' },
+								'message'
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group is-empty' },
+							_react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: 'Write your message here...',
+								value: this.state.message,
+								onKeyPress: this.handleEnterKey.bind(this),
+								onChange: this.handleInput.bind(this),
+								ref: 'textInput' })
+						),
+						_react2.default.createElement(
+							'span',
+							{ className: 'input-group-btn', style: { 'paddingTop': '27px' } },
+							_react2.default.createElement(
+								'button',
+								{ type: 'submit', className: 'btn btn-default btn-sm', onClick: this.handleSubmit.bind(this) },
+								'Send'
+							)
+						)
+					)
+				);
+			}
+		}]);
+	
+		return ChatEntry;
+	}(_react2.default.Component);
+	
+	exports.default = ChatEntry;
+	
+	
+	ChatEntry.propTypes = {
+		onMessageSubmit: _react2.default.PropTypes.func.isRequired
+	};
+
+/***/ },
+/* 181 */
+/*!***********************************************************!*\
+  !*** ./src/main/webapp/jsx/components/chat/ChatWindow.js ***!
+  \***********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 35);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var ChatWindow = function (_React$Component) {
+		_inherits(ChatWindow, _React$Component);
+	
+		function ChatWindow(props) {
+			_classCallCheck(this, ChatWindow);
+	
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(ChatWindow).call(this, props));
+		}
+	
+		_createClass(ChatWindow, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ id: 'chatHolder' },
+					this.props.messages.map(function (message, i) {
+						return _react2.default.createElement(
+							'div',
+							{ className: 'row', key: i, style: { 'marginBottom': '10px' } },
+							_react2.default.createElement(
+								'div',
+								{ className: 'card card-raised vertical-align' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-sm-1 text-center center-block  addSpace' },
+									_react2.default.createElement('img', { src: '/resources/images/face.png', className: 'img-circle' }),
+									_react2.default.createElement(
+										'div',
+										null,
+										message.user.userName
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-sm-10 text-left addSpace' },
+									message.message
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-sm-1 text-center addSpace' },
+									message.createDate.hour,
+									':',
+									message.createDate.minute < 10 ? '0' + message.createDate.minute : message.createDate.minute,
+									':',
+									message.createDate.second
+								)
+							)
+						);
+					})
+				);
+			}
+		}]);
+	
+		return ChatWindow;
+	}(_react2.default.Component);
+	
+	exports.default = ChatWindow;
+	
+	
+	ChatWindow.propTypes = {
+		messages: _react2.default.PropTypes.array.isRequired
 	};
 
 /***/ }
