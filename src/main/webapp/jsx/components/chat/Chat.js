@@ -2,22 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ChatEntry from './ChatEntry.js';
 import ChatWindow from './ChatWindow.js';
+import ConnectedUsersWindow from './ConnectedUsersWindow.js';
 
 export default class Chat extends React.Component {
 	
 	constructor(props){
 		super(props);
 		this.state = {
-				messages: []
+			messages: [],
+			users: []
 		}
-	}
-
-	componentDidMount(){
-		
+		this.id = -1;
 	}
 	
 	componentDidUpdate(){
-		if (this.props.id > 0){
+		if (this.props.id > 0 && this.props.id != this.id){
+			this.id = this.props.id;
 			const chatModal = ReactDOM.findDOMNode(this.refs.chatModal);
 			$(chatModal).modal('show');
 			let ws = new WebSocket("ws://localhost:8080/socket");
@@ -30,12 +30,20 @@ export default class Chat extends React.Component {
 				// subscribe to all the stuff we need
 				this.stompClient.subscribe(this.subscribeEndpoint + "/join", (data) => {
 					let user = JSON.parse(data.body);
-					//debugger;
+					let users = this.state.users;
+					users.push(user);
+					this.setState({
+						users: users
+					});
 				});
 				
 				this.stompClient.subscribe(this.subscribeEndpoint + "/leave", (data) => {
 					let user = JSON.parse(data.body);
-					//debugger;
+					let users = this.state.users;
+					users = users.filter((e) => e.id !== user.id);
+					this.setState({
+						users: users
+					});
 				});
 				
 				this.stompClient.subscribe(this.subscribeEndpoint + "/message", (data) => {
@@ -116,11 +124,11 @@ export default class Chat extends React.Component {
 								<div className="content" style={{'minHeight': '60vh'}}>
 									<div className="tab-content text-center">
 										<div className="tab-pane active" id="chat">
-											 <ChatWindow messages={this.state.messages} />
-											 <ChatEntry onMessageSubmit={this.sendMessage.bind(this)} />
+											<ChatWindow messages={this.state.messages} />
+											<ChatEntry onMessageSubmit={this.sendMessage.bind(this)} />
 										</div>
 										<div className="tab-pane" id="users">
-											<p> I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at. I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus. I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at.</p>
+											<ConnectedUsersWindow users={this.state.users} />
 										</div>
 									</div>
 								</div>
