@@ -145,26 +145,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<!-- Build the front end -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<executable>npm</executable>
-					<arguments>
-						<argument>build</argument>
-					</arguments>
-					<workingDirectory>.</workingDirectory>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 
