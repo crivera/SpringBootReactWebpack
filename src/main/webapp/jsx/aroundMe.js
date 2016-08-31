@@ -91,7 +91,7 @@ export default class AroundMe extends React.Component {
 		  lat: this.state.userLat,
 		  lng: this.state.userLng,
 		  showNewChatModal: true
-	  })
+	  });
   }
   
 	submitNewChat(chatName, lat, lng){
@@ -121,6 +121,12 @@ export default class AroundMe extends React.Component {
 		 	}
 		});
 	}
+	
+	hideNewChat(){
+		this.setState({
+			  showNewChatModal: false
+		});
+	}
   
 	joinChat(chatId){
 		this.setState({
@@ -145,7 +151,7 @@ export default class AroundMe extends React.Component {
   render () {
 	  let showError = (this.state.errorMessage) ? <ErrorNotification errorMessage={this.state.errorMessage} clear={this.clearErrorMessage.bind(this)}/> : '';
 	  let needsUpdateProfile = (this.state.currentUser && !this.state.currentUser.userName) ? <UpdateProfile user={this.state.currentUser} updateUser={this.updateUser.bind(this)}/> : '';
-	  let showNewChatModal = (this.state.showNewChatModal) ? <NewChat submitNewChat={this.submitNewChat.bind(this)} lat={this.state.lat} lng={this.state.lng} /> : ''; 
+	  let showNewChatModal = (this.state.showNewChatModal) ? <NewChat submitNewChat={this.submitNewChat.bind(this)} hideNewChat={this.hideNewChat.bind(this)} lat={this.state.lat} lng={this.state.lng} /> : ''; 
 	  return (
   		<div>
   			<button className="btn btn-success btn-fab btn-fab-mini btn-round" id="newChatButton" data-toggle="modal" onClick={this.showNewChat.bind(this)}>

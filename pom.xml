@@ -53,12 +53,12 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-messaging</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
@@ -136,7 +136,7 @@
 			<artifactId>jose4j</artifactId>
 			<version>0.4.4</version>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
@@ -144,6 +144,26 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<!-- Build the front end -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<executable>npm</executable>
+					<arguments>
+						<argument>build</argument>
+					</arguments>
+					<workingDirectory>.</workingDirectory>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -20,7 +20,10 @@ export default class Chat extends React.Component {
 			this.id = this.props.id;
 			const chatModal = ReactDOM.findDOMNode(this.refs.chatModal);
 			$(chatModal).modal('show');
-			let ws = new WebSocket("ws://localhost:8080/socket");
+			let websocketConnection = "ws://localhost:8080/socket";
+			if (window.location.protocol == "https:")
+				websocketConnection = "wss://localhost:8080/socket";
+			let ws = new WebSocket(websocketConnection);
 			this.stompClient = Stomp.over(ws);
 			this.subscribeEndpoint = "/chat/" + this.props.id;
 			this.publishEndpoint = "/app" + this.subscribeEndpoint;

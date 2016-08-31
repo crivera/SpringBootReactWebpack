@@ -31,7 +31,6 @@
 						</div>
 						<div class="footer text-center">
 							<button id="loginViewTextButton" class="btn btn-round btn-info">Login via Text</button>
-							<button id="loginViewEmailButton" class="btn btn-round btn-info">Login via Email</button>
 						</div>
 					</form>
 				</div>

@@ -13,12 +13,30 @@ export default class NewChat extends React.Component {
 	componentDidMount(){
 		const newChatModal = ReactDOM.findDOMNode(this.refs.newChatModal);
 		$(newChatModal).modal('show');
+		$(newChatModal).on('hidden.bs.modal', () => {
+			this.props.hideNewChat();
+		});
+	}
+	
+	componentWillMount(){
+		document.addEventListener("keydown", this.handleEscKey.bind(this));
+	}
+	
+	componentWillUnmount(){
+		 document.removeEventListener("keydown", this.handleEscKey.bind(this));
 	}
 	
 	handleInput(event) {
 	   this.setState({chatName: event.target.value.substr(0, 30)});
 	}
-	  
+	
+	handleEscKey(event){
+	  if(event.keyCode == 27){
+    	const newChatModal = ReactDOM.findDOMNode(this.refs.newChatModal);
+			$(newChatModal).modal('hide');
+    }
+  }
+	
 	submitNewChat(){
 		let chatName = this.state.chatName;
 	 	if (chatName.length == 0) 
@@ -59,6 +77,7 @@ export default class NewChat extends React.Component {
 
 NewChat.propTypes = { 
 		submitNewChat: React.PropTypes.func.isRequired,
+		hideNewChat: React.PropTypes.func.isRequired,
 		lat: React.PropTypes.number.isRequired,
 		lng: React.PropTypes.number.isRequired
 };
