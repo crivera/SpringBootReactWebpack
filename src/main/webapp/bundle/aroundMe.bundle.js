@@ -225,6 +225,10 @@
 		}, {
 			key: 'joinChat',
 			value: function joinChat(chatId) {
+				if (!this.state.currentUser) {
+					window.location.replace("/loginPage");
+					return;
+				}
 				this.setState({
 					chatId: chatId
 				});

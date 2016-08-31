@@ -129,6 +129,10 @@ export default class AroundMe extends React.Component {
 	}
   
 	joinChat(chatId){
+		if (!this.state.currentUser){
+			window.location.replace("/loginPage");
+			return;
+		}
 		this.setState({
 			chatId: chatId
 		});
