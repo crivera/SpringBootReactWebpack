@@ -22,7 +22,7 @@ export default class Chat extends React.Component {
 			$(chatModal).modal('show');
 			let websocketConnection = "ws://localhost:8080/socket";
 			if (window.location.protocol == "https:")
-				websocketConnection = "wss://localhost:8080/socket";
+				websocketConnection = "wss://mysterious-lowlands-52849.herokuapp.com/socket";
 			let ws = new WebSocket(websocketConnection);
 			this.stompClient = Stomp.over(ws);
 			this.subscribeEndpoint = "/chat/" + this.props.id;

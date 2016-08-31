@@ -22910,7 +22910,7 @@
 					var chatModal = _reactDom2.default.findDOMNode(this.refs.chatModal);
 					$(chatModal).modal('show');
 					var websocketConnection = "ws://localhost:8080/socket";
-					if (window.location.protocol == "https:") websocketConnection = "wss://localhost:8080/socket";
+					if (window.location.protocol == "https:") websocketConnection = "wss://mysterious-lowlands-52849.herokuapp.com/socket";
 					var ws = new WebSocket(websocketConnection);
 					this.stompClient = Stomp.over(ws);
 					this.subscribeEndpoint = "/chat/" + this.props.id;
